@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<InputData xmlns="http://schemas.visma.com/PensionBroker/InputData/2017/10" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+	<PensionCase xsi:type="EuroAccidentCompanyPensionCase">
+		<CPR></CPR>
+		<RequestType></RequestType>
+		<CVR></CVR>
+		<PensionTaker>
+			<FirstName></FirstName>
+			<LastName></LastName>
+			<TelephoneNo1></TelephoneNo1>
+			<Email></Email>
+			<EmployerCompanyName></EmployerCompanyName>
+		</PensionTaker>
+		<Contribution>
+			<AnnualSalary></AnnualSalary>
+			<MandatoryEmployerContribution></MandatoryEmployerContribution>
+		</Contribution>
+		<Investment>
+		</Investment>
+		<Coverage>
+			<DeathFixedAmount></DeathFixedAmount>
+			<WorkAbilityLossPercent></WorkAbilityLossPercent>
+			<DisabilityFixedAmount></DisabilityFixedAmount>
+			<CriticalDiseaseFixedAmount></CriticalDiseaseFixedAmount>
+		</Coverage>
+	</PensionCase>
+</InputData>

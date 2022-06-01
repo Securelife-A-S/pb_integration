@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<InputData xmlns="http://schemas.visma.com/PensionBroker/InputData/2017/10" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+	<PensionCase xsi:type="EuroAccidentCompanyPensionCase">
+		<CPR>1001931527</CPR>
+		<RequestType>Amendment</RequestType>
+		<CVR>36163771</CVR>
+		<PensionTaker>
+			<FirstName>Adasd</FirstName>
+			<LastName>qasdasd</LastName>
+			<TelephoneNo1>3114524</TelephoneNo1>
+			<Email>astly</Email>
+			<EmployerCompanyName>BEDSTpension</EmployerCompanyName>
+		</PensionTaker>
+		<Contribution>
+			<AnnualSalary>10000</AnnualSalary>
+			<MandatoryContribution>0</MandatoryContribution>
+			<OptionalContribution>0</OptionalContribution>
+		</Contribution>
+		<Investment>
+		</Investment>
+		<Coverage>
+			<DeathPercent>0</DeathPercent>
+			<DeathTaxCode>TaxCode5</DeathTaxCode>
+			<WorkAbilityLossPercent>1</WorkAbilityLossPercent>
+			<DisabilityFixedAmount>0</DisabilityFixedAmount>
+			<CriticalDiseaseFixedAmount>0</CriticalDiseaseFixedAmount>
+			<ChildPensionPercent>0</ChildPensionPercent>
+		</Coverage>
+	</PensionCase>
+</InputData>

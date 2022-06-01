@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<InputData xmlns="http://schemas.visma.com/PensionBroker/InputData/2017/10" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+	<PensionCase xsi:type="EuroAccidentCompanyPensionCase">
+		<CPR>1001931527</CPR>
+		<RequestType>Subscription</RequestType>
+		<CVR>36163771</CVR>
+		<PensionTaker>
+			<FirstName>Andreas</FirstName>
+			<LastName>Styltsvig</LastName>
+			<TelephoneNo1>31150424</TelephoneNo1>
+			<Email>astyltsvig@gmail.com</Email>
+			<EmployerCompanyName>Astyltsvig consulting</EmployerCompanyName>
+		</PensionTaker>
+		<Contribution>
+			<AnnualSalary>100000</AnnualSalary>
+			<MandatoryEmployerContribution>5</MandatoryEmployerContribution>
+		</Contribution>
+		<Investment>
+		</Investment>
+		<Coverage>
+			<DeathFixedAmount>100</DeathFixedAmount>
+			<WorkAbilityLossPercent>1</WorkAbilityLossPercent>
+			<DisabilityFixedAmount>150000</DisabilityFixedAmount>
+			<CriticalDiseaseFixedAmount>150000</CriticalDiseaseFixedAmount>
+		</Coverage>
+	</PensionCase>
+</InputData>

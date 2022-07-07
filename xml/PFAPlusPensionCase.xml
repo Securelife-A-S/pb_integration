@@ -25,13 +25,6 @@
 			<TheRestSavingsType></TheRestSavingsType>
 		</Savings>
 		<Coverage>
-			<DeathPercent></DeathPercent>
-			<DeathTaxCode></DeathTaxCode>
-			<WorkAbilityLossPercent></WorkAbilityLossPercent>
-			<WorkAbilityLossTaxCode></WorkAbilityLossTaxCode>
-			<DisabilityFixedAmount></DisabilityFixedAmount>
-			<CriticalDiseaseFixedAmount></CriticalDiseaseFixedAmount>
-			<ChildPensionPercent></ChildPensionPercent>
 		</Coverage>
 	</PensionCase>
 </InputData>

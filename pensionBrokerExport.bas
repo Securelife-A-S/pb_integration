@@ -1,4 +1,4 @@
-Sub XMLTest()
+Sub ExportToPensionBroker()
 
 ' ### Step 1: Load data from pension broker sheet and parse to dict ###
 Dim key As Variant

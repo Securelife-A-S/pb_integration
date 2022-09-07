@@ -50,7 +50,7 @@ End Function
 
 
 
-Private Sub init()
+Sub init()
 
 Call DeleteVBComponent("PensionBrokerExport")
 Call DeleteVBComponent("UserForm1")

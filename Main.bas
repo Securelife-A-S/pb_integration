@@ -58,7 +58,7 @@ Call DeleteVBComponent("PensionBrokerExport")
 Call DeleteVBComponent("UserForm1")
 Call addBasFile
 Call addUserForm
-MsgBox "Rådgivningsværktøjet er nu opdateret til den seneste version"
+               MsgBox "Arket er nu opdateret til den seneste version"
 
 
 End Sub

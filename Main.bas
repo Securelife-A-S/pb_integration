@@ -1,3 +1,5 @@
+Option Explicit
+
 Function DeleteVBComponent(ByVal CompName As String)
 
 'Disabling the alert message

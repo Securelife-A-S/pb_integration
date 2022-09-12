@@ -62,18 +62,18 @@ Set objRequest = CreateObject("MSXML2.XMLHTTP")
 
 If SecureLifeButton = True Then
     Debug.Print ("Securelife")
-    strUrl = "https://europe-west1-life-prod-e2f1e.cloudfunctions.net/employeePolicy/export/" & cprBox.value
+               strUrl = "https://europe-west1-life-prod-e2f1e.cloudfunctions.net/integration/excel/" & cprBox.value
 End If
 
 If BedstPensionButton = True Then
     Debug.Print ("Bedstpension")
-    strUrl = "https://europe-west1-bedstpension-prod.cloudfunctions.net/employeePolicy/export/" & cprBox.value
+    strUrl = "https://europe-west1-bedstpension-prod.cloudfunctions.net/integration/excel/" & cprBox.value
 End If
 
 
 If SecureLifeTestButton = True Then
     Debug.Print ("Securelife test")
-    strUrl = "https://europe-west1-life-stage-e2fb7.cloudfunctions.net/employeePolicy/export/" & cprBox.value
+    strUrl = "https://europe-west1-life-stage-e2fb7.cloudfunctions.net/integration/excel/" & cprBox.value
 End If
 
 
@@ -177,18 +177,18 @@ Set objRequest = CreateObject("MSXML2.XMLHTTP")
 
 If SecureLifeButton = True Then
     Debug.Print ("Securelife")
-    strUrl = "https://europe-west1-life-prod-e2f1e.cloudfunctions.net/employeePolicy/export/" & cprBox.value
+    strUrl = "https://europe-west1-life-prod-e2f1e.cloudfunctions.net/integration/excel/" & cprBox.value
 End If
 
 If BedstPensionButton = True Then
     Debug.Print ("Bedstpension")
-    strUrl = "https://europe-west1-bedstpension-prod.cloudfunctions.net/employeePolicy/export/" & cprBox.value
+    strUrl = "https://europe-west1-bedstpension-prod.cloudfunctions.net/integration/excel/" & cprBox.value
 End If
 
 
 If SecureLifeTestButton = True Then
     Debug.Print ("Securelife test")
-    strUrl = "https://europe-west1-life-stage-e2fb7.cloudfunctions.net/employeePolicy/export/" & cprBox.value
+    strUrl = "https://europe-west1-life-stage-e2fb7.cloudfunctions.net/integration/excel/" & cprBox.value
 End If
 
 

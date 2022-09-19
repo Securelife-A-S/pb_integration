@@ -10,13 +10,14 @@ Dim xmlPath As String
 Dim chromePath As String
 Dim requestType As String
 
-
+Dim strPath As String
+strPath = Environ("USERPROFILE") & "\Desktop\pb"
 startRow = 6 'Start row in Pension broker sheet
 endRow = 30 'End row in Pension broker sheet
 
 
 ' xmlPath = "C:\Users\Andreas Styltsvig\Desktop\pensionbroker_integration\xml\"
-xmlPath = ThisWorkbook.path & "\pb\pb_integration-main\xml\"
+xmlPath = strPath & "\pb_integration-main\xml\"
 
 For i = startRow To endRow
     key = ThisWorkbook.Worksheets("Pension Broker").Range("B" & i).value
@@ -30,7 +31,7 @@ For i = startRow To endRow
     dict.Add key:=key, Item:=value
 Next i
 
-dict.Add key:="Løntype", Item:=ThisWorkbook.Worksheets("Pension Broker").Range("E25").value
+dict.Add key:="LÃ¸ntype", Item:=ThisWorkbook.Worksheets("Pension Broker").Range("E25").value
 
 For Each key In dict.keys
     Debug.Print key, dict(key)
@@ -74,7 +75,7 @@ Select Case pensionCompanyName
             pensionCase = "TopdanmarkCompanyPensionPensionCase"
         ElseIf StrComp(pensionType, "Individuel firmaordning Profilpension/Link/Spar Top") = 0 Then
             pensionCase = "TopdanmarkCompanyPseudoPrivatePensionCase"
-        ElseIf StrComp(pensionType, "Dirketørpension") = 0 Then
+        ElseIf StrComp(pensionType, "DirketÃ¸rpension") = 0 Then
             pensionCase = "TopdanmarkCompanyExecutivePensionCase"
         ElseIf StrComp(pensionType, "Indehaverpension/Privatpension") = 0 Then
             pensionCase = "TopdanmarkCompanyProprietorPensionCase"
@@ -122,13 +123,13 @@ myVar = dict("CVR nr.") '<--- Fornavn
 xmlRoot.SelectSingleNode("CVR").text = myVar
 myVar = dict("CPR nr.") '<--- Efternavn
 xmlRoot.SelectSingleNode("CPR").text = myVar
-myVar = dict("Type af begæring")
+myVar = dict("Type af begÃ¦ring")
 
 If InStr(myVar, "Nytegning") > 0 Then
 myVar = "Subscription"
 End If
 
-If InStr(myVar, "Ændring") > 0 Then
+If InStr(myVar, "Ã†ndring") > 0 Then
 myVar = "Amendment"
 End If
 
@@ -159,7 +160,7 @@ Call xmlDoc.Load(tmpPath) ' <-- Load file
 ' Contribution / Bidrag
 Set xmlRoot = xmlDoc.getElementsByTagName("Contribution").Item(0)
 
-myVar = dict("Løn") '<--- Løn
+myVar = dict("LÃ¸n") '<--- LÃ¸n
 xmlRoot.SelectSingleNode("AnnualSalary").text = myVar
 
 Debug.Print (pensionCase)
@@ -203,7 +204,7 @@ Select Case pensionCase
         myVar = dict("Frivilligtbidrag") '<--- Frivilligtbidrag
         xmlRoot.SelectSingleNode("OptionalContribution").text = myVar
         ' xmlRoot.SelectSingleNode("OptionalContributionStartDate").Text = today
-        myVar = dict("Løn")
+        myVar = dict("LÃ¸n")
         xmlRoot.SelectSingleNode("BonusSalary").text = myVar
         If dict("Frivilligtbidrag") > 0 Then
             xmlRoot.SelectSingleNode("PremiumWaiver").text = "True"
@@ -315,15 +316,15 @@ Call xmlDoc.Save(tmpPath)
 
 End If
 
-' Coverage / Dækning
-myVar = dict("Type af begæring")
+' Coverage / DÃ¦kning
+myVar = dict("Type af begÃ¦ring")
 
 If InStr(myVar, "Nytegning") > 0 Then
 Set xmlRoot = xmlDoc.getElementsByTagName("Coverage").Item(0)
 
 Select Case pensionCase
     Case "APPensionPensionCase"
-        myVar = dict("Dødsfald") '<--- Dødsfald
+        myVar = dict("DÃ¸dsfald") '<--- DÃ¸dsfald
         xmlRoot.SelectSingleNode("DeathPercent").text = myVar
         myVar = dict("Tab af erhvervsevne") '<--- Tab af erhvervsevne
         xmlRoot.SelectSingleNode("WorkAbilityLossPercent").text = myVar
@@ -331,13 +332,13 @@ Select Case pensionCase
         xmlRoot.SelectSingleNode("DisabilityFixedAmount").text = myVar
         myVar = dict("Kritisk sygdom") '<--- Invalidesum
         xmlRoot.SelectSingleNode("CriticalDiseaseFixedAmount").text = myVar
-        myVar = dict("Børnerente") '<--- Børnerente
+        myVar = dict("BÃ¸rnerente") '<--- BÃ¸rnerente
         xmlRoot.SelectSingleNode("ChildPensionPercent").text = myVar
         xmlRoot.SelectSingleNode("WorkAbilityLossTaxCode").text = "TaxCode1"
         xmlRoot.SelectSingleNode("DeathTaxCode").text = "TaxCode5"
 
     Case "DanicaPensionCase"
-        myVar = dict("Dødsfald") '<--- Dødsfald
+        myVar = dict("DÃ¸dsfald") '<--- DÃ¸dsfald
         xmlRoot.SelectSingleNode("DeathPercent").text = myVar
         myVar = dict("Tab af erhvervsevne") '<--- Tab af erhvervsevne
         xmlRoot.SelectSingleNode("WorkAbilityLossPercent").text = myVar
@@ -345,14 +346,14 @@ Select Case pensionCase
         xmlRoot.SelectSingleNode("DisabilityFixedAmount").text = myVar
         myVar = dict("Kritisk sygdom") '<--- Invalidesum
         xmlRoot.SelectSingleNode("CriticalDiseaseFixedAmount").text = myVar
-        myVar = dict("Børnerente") '<--- Børnerente
+        myVar = dict("BÃ¸rnerente") '<--- BÃ¸rnerente
         xmlRoot.SelectSingleNode("ChildPensionPercent").text = myVar
-        myVar = dict("Løn")
+        myVar = dict("LÃ¸n")
         xmlRoot.SelectSingleNode("RewardingSalary").text = myVar
-        myVar = dict("Løntype")
+        myVar = dict("LÃ¸ntype")
         If InStr(myVar, "Standard") > 0 Then
         xmlRoot.SelectSingleNode("WorkAbilityLossScales").text = "false"
-        ElseIf InStr(myVar, "Lønskala") > 0 Then
+        ElseIf InStr(myVar, "LÃ¸nskala") > 0 Then
         xmlRoot.SelectSingleNode("WorkAbilityLossScales").text = "True"
         End If
         xmlRoot.SelectSingleNode("WorkAbilityLossTaxCode").text = "TaxCode1"
@@ -360,7 +361,7 @@ Select Case pensionCase
         
         
     Case "EuroAccidentCompanyPensionCase"
-        myVar = dict("Dødsfald") '<--- Dødsfald
+        myVar = dict("DÃ¸dsfald") '<--- DÃ¸dsfald
         xmlRoot.SelectSingleNode("DeathFixedAmount").text = myVar
         myVar = dict("Tab af erhvervsevne") '<--- Tab af erhvervsevne
         xmlRoot.SelectSingleNode("WorkAbilityLossPercent").text = myVar
@@ -370,7 +371,7 @@ Select Case pensionCase
         xmlRoot.SelectSingleNode("CriticalDiseaseFixedAmount").text = myVar
         
     Case "VellivN16PensionCase"
-        myVar = dict("Dødsfald") '<--- Dødsfald
+        myVar = dict("DÃ¸dsfald") '<--- DÃ¸dsfald
         xmlRoot.SelectSingleNode("DeathPercent").text = myVar
         myVar = dict("Tab af erhvervsevne") '<--- Tab af erhvervsevne
         xmlRoot.SelectSingleNode("WorkAbilityLossPercent").text = myVar
@@ -378,12 +379,12 @@ Select Case pensionCase
         xmlRoot.SelectSingleNode("DisabilityFixedAmount").text = myVar
         myVar = dict("Kritisk sygdom") '<--- Invalidesum
         xmlRoot.SelectSingleNode("CriticalDiseaseFixedAmount").text = myVar
-        myVar = dict("Børnerente") '<--- Børnerente
+        myVar = dict("BÃ¸rnerente") '<--- BÃ¸rnerente
         xmlRoot.SelectSingleNode("ChildPensionPercent").text = myVar
-        myVar = dict("Løntype") '<--- Børnerente
+        myVar = dict("LÃ¸ntype") '<--- BÃ¸rnerente
         If InStr(myVar, "Standard") > 0 Then
         xmlRoot.SelectSingleNode("WorkAbilityLossTaxType").text = "Standard"
-        ElseIf InStr(myVar, "Lønskala") > 0 Then
+        ElseIf InStr(myVar, "LÃ¸nskala") > 0 Then
         xmlRoot.SelectSingleNode("WorkAbilityLossTaxType").text = "Scale"
         End If
         xmlRoot.SelectSingleNode("WorkAbilityLossTaxCode").text = "TaxCode1"
@@ -392,7 +393,7 @@ Select Case pensionCase
         
         
     Case "VellivLandmandspensionPensionCase"
-        myVar = dict("Dødsfald") '<--- Dødsfald
+        myVar = dict("DÃ¸dsfald") '<--- DÃ¸dsfald
         xmlRoot.SelectSingleNode("DeathPercent").text = myVar
         myVar = dict("Tab af erhvervsevne") '<--- Tab af erhvervsevne
         xmlRoot.SelectSingleNode("WorkAbilityLossPercent").text = myVar
@@ -400,13 +401,13 @@ Select Case pensionCase
         ' xmlRoot.SelectSingleNode("DisabilityFixedAmount").Text = myVar
         myVar = dict("Kritisk sygdom") '<--- Invalidesum
         xmlRoot.SelectSingleNode("CriticalDiseaseFixedAmount").text = myVar
-        myVar = dict("Børnerente") '<--- Børnerente
+        myVar = dict("BÃ¸rnerente") '<--- BÃ¸rnerente
         xmlRoot.SelectSingleNode("ChildPensionPercent").text = myVar
         xmlRoot.SelectSingleNode("WorkAbilityLossTaxCode").text = "TaxCode1"
         xmlRoot.SelectSingleNode("DeathTaxCode").text = "TaxCode5"
         
     Case "VellivETSPensionCase"
-        myVar = dict("Dødsfald") '<--- Dødsfald
+        myVar = dict("DÃ¸dsfald") '<--- DÃ¸dsfald
         xmlRoot.SelectSingleNode("DeathPercent").text = myVar
         myVar = dict("Tab af erhvervsevne") '<--- Tab af erhvervsevne
         xmlRoot.SelectSingleNode("WorkAbilityLossPercent").text = myVar
@@ -414,13 +415,13 @@ Select Case pensionCase
         ' xmlRoot.SelectSingleNode("DisabilityFixedAmount").Text = myVar
         myVar = dict("Kritisk sygdom") '<--- Invalidesum
         xmlRoot.SelectSingleNode("CriticalDiseaseFixedAmount").text = myVar
-        myVar = dict("Børnerente") '<--- Børnerente
+        myVar = dict("BÃ¸rnerente") '<--- BÃ¸rnerente
         xmlRoot.SelectSingleNode("ChildPensionPercent").text = myVar
         xmlRoot.SelectSingleNode("WorkAbilityLossTaxCode").text = "TaxCode1"
         xmlRoot.SelectSingleNode("DeathTaxCode").text = "TaxCode5"
         
     Case "VellivLivPensionCase"
-        myVar = dict("Dødsfald") '<--- Dødsfald
+        myVar = dict("DÃ¸dsfald") '<--- DÃ¸dsfald
         xmlRoot.SelectSingleNode("DeathPercent").text = myVar
         myVar = dict("Tab af erhvervsevne") '<--- Tab af erhvervsevne
         xmlRoot.SelectSingleNode("WorkAbilityLossPercent").text = myVar
@@ -428,13 +429,13 @@ Select Case pensionCase
         xmlRoot.SelectSingleNode("DisabilityFixedAmount").text = myVar
         myVar = dict("Kritisk sygdom") '<--- Invalidesum
         xmlRoot.SelectSingleNode("CriticalDiseaseFixedAmount").text = myVar
-        myVar = dict("Børnerente") '<--- Børnerente
+        myVar = dict("BÃ¸rnerente") '<--- BÃ¸rnerente
         xmlRoot.SelectSingleNode("ChildPensionPercent").text = myVar
         xmlRoot.SelectSingleNode("WorkAbilityLossTaxCode").text = "TaxCode1"
         xmlRoot.SelectSingleNode("DeathTaxCode").text = "TaxCode5"
         
     Case "TopdanmarkCompanyPensionPensionCase"
-        myVar = dict("Dødsfald") '<--- Dødsfald
+        myVar = dict("DÃ¸dsfald") '<--- DÃ¸dsfald
         xmlRoot.SelectSingleNode("DeathPercent").text = myVar
         myVar = dict("Tab af erhvervsevne") '<--- Tab af erhvervsevne
         xmlRoot.SelectSingleNode("WorkAbilityLossPercent").text = myVar
@@ -442,7 +443,7 @@ Select Case pensionCase
         xmlRoot.SelectSingleNode("DisabilityFixedAmount").text = myVar
         myVar = dict("Kritisk sygdom") '<--- Invalidesum
         xmlRoot.SelectSingleNode("CriticalDiseaseFixedAmount").text = myVar
-        myVar = dict("Børnerente") '<--- Børnerente
+        myVar = dict("BÃ¸rnerente") '<--- BÃ¸rnerente
         xmlRoot.SelectSingleNode("ChildPensionPercent").text = myVar
         xmlRoot.SelectSingleNode("WorkAbilityLossTaxCode").text = "TaxCode1"
         xmlRoot.SelectSingleNode("DeathTaxCode").text = "TaxCode5"
@@ -452,7 +453,7 @@ Select Case pensionCase
         xmlRoot.SelectSingleNode("CriticalDiseaseFixedAmount").text = myVar
 
     Case "TopdanmarkCompanyExecutivePensionCase" ' <-- BROKEN
-        myVar = dict("Dødsfald") '<--- Dødsfald
+        myVar = dict("DÃ¸dsfald") '<--- DÃ¸dsfald
         xmlRoot.SelectSingleNode("DeathPercent").text = myVar
         myVar = dict("Tab af erhvervsevne") '<--- Tab af erhvervsevne
         xmlRoot.SelectSingleNode("WorkAbilityLossPercent").text = myVar
@@ -460,13 +461,13 @@ Select Case pensionCase
         xmlRoot.SelectSingleNode("DisabilityFixedAmount").text = myVar
         myVar = dict("Kritisk sygdom") '<--- Invalidesum
         xmlRoot.SelectSingleNode("CriticalDiseaseFixedAmount").text = myVar
-        myVar = dict("Børnerente") '<--- Børnerente
+        myVar = dict("BÃ¸rnerente") '<--- BÃ¸rnerente
         xmlRoot.SelectSingleNode("ChildPensionPercent").text = myVar
         xmlRoot.SelectSingleNode("WorkAbilityLossTaxCode").text = "TaxCode1"
         xmlRoot.SelectSingleNode("DeathTaxCode").text = "TaxCode5"
         
     Case "TopdanmarkCompanyProprietorPensionCase" ' <-- BROKEN
-        myVar = dict("Dødsfald") '<--- Dødsfald
+        myVar = dict("DÃ¸dsfald") '<--- DÃ¸dsfald
         xmlRoot.SelectSingleNode("DeathPercent").text = myVar
         myVar = dict("Tab af erhvervsevne") '<--- Tab af erhvervsevne
         xmlRoot.SelectSingleNode("WorkAbilityLossPercent").text = myVar
@@ -474,7 +475,7 @@ Select Case pensionCase
         xmlRoot.SelectSingleNode("DisabilityFixedAmount").text = myVar
         myVar = dict("Kritisk sygdom") '<--- Invalidesum
         xmlRoot.SelectSingleNode("CriticalDiseaseFixedAmount").text = myVar
-        myVar = dict("Børnerente") '<--- Børnerente
+        myVar = dict("BÃ¸rnerente") '<--- BÃ¸rnerente
         xmlRoot.SelectSingleNode("ChildPensionPercent").text = myVar
         xmlRoot.SelectSingleNode("WorkAbilityLossTaxCode").text = "TaxCode1"
         xmlRoot.SelectSingleNode("DeathTaxCode").text = "TaxCode5"
@@ -490,10 +491,10 @@ Debug.Print "NYTEGNING"
 Call xmlDoc.Save(tmpPath)
 End If
 
-myVar = dict("Type af begæring")
+myVar = dict("Type af begÃ¦ring")
 
-If InStr(myVar, "Ændring") > 0 Then
-Debug.Print "ÆNDRINGSBEGÆRING"
+If InStr(myVar, "Ã†ndring") > 0 Then
+Debug.Print "Ã†NDRINGSBEGÃ†RING"
 Dim list As IXMLDOMNodeList
 Set list = xmlDoc.SelectNodes("//InputData/PensionCase/Coverage")
 

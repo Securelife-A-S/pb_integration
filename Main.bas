@@ -24,40 +24,37 @@ Application.DisplayAlerts = True
 End Function
 
 
-Function addBasFile()
+Function addBasFile(strPath As String)
 
 Dim path As String
 Dim objModule As Object
 
-path = ThisWorkbook.path & "\pb\pb_integration-main\pensionBrokerExport.bas"
+path = strPath & "\pb_integration-main\pensionBrokerExport.bas"
 Set objModule = Application.VBE.ActiveVBProject.VBComponents.Import(path)
 objModule.Name = "PensionBrokerExport"
-
-
-Debug.Print path
+Debug.Print ("PensionBrokerExport imported")
 
 End Function
-Function addUserForm()
+Function addUserForm(strPath As String)
 
 Dim path As String
 Dim objModule As Object
 
-path = ThisWorkbook.path & "\pb\pb_integration-main\UserForm1.frm"
+path = strPath & "\pb_integration-main\UserForm1.frm"
 Set objModule = Application.VBE.ActiveVBProject.VBComponents.Import(path)
 objModule.Name = "UserForm1"
-
-Debug.Print path
-
+Debug.Print ("UserForm1 imported")
 End Function
 
 
 
 Sub init()
-
+Dim strPath As String
+strPath = Environ("USERPROFILE") & "\Desktop\pb"
 Call DeleteVBComponent("PensionBrokerExport")
 Call DeleteVBComponent("UserForm1")
-Call addBasFile
-Call addUserForm
+Call addBasFile(strPath)
+Call addUserForm(strPath)
 MsgBox "Arket er nu opdateret til den seneste version"
 
 

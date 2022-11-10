@@ -30,7 +30,7 @@ Dim path As String
 Dim objModule As Object
 
 path = strPath & "\pb_integration-main\pensionBrokerExport.bas"
-converFile (path)
+Call convertFile (path)
 Set objModule = Application.VBE.ActiveVBProject.VBComponents.Import(path)
 objModule.Name = "PensionBrokerExport"
 Debug.Print ("PensionBrokerExport imported")
@@ -41,7 +41,7 @@ Sub addUserForm(strPath As String)
 Dim path As String
 Dim objModule As Object
 path = strPath & "\pb_integration-main\UserForm1.frm"
-convertFile (path)
+Call convertFile (path)
 
 
 Set objModule = Application.VBE.ActiveVBProject.VBComponents.Import(path)

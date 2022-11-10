@@ -1,6 +1,6 @@
 Option Explicit
 
-Function DeleteVBComponent(ByVal CompName As String)
+Sub DeleteVBComponent(ByVal CompName As String)
 
 'Disabling the alert message
 Application.DisplayAlerts = False
@@ -21,10 +21,10 @@ On Error GoTo 0
 'Enabling the alert message
 Application.DisplayAlerts = True
 
-End Function
+End Sub
 
 
-Function addBasFile(strPath As String)
+Sub addBasFile(strPath As String)
 
 Dim path As String
 Dim objModule As Object
@@ -35,8 +35,8 @@ Set objModule = Application.VBE.ActiveVBProject.VBComponents.Import(path)
 objModule.Name = "PensionBrokerExport"
 Debug.Print ("PensionBrokerExport imported")
 
-End Function
-Function addUserForm(strPath As String)
+End Sub
+Sub addUserForm(strPath As String)
 
 Dim path As String
 Dim objModule As Object
@@ -45,7 +45,7 @@ Call ConvertGitHubFileForVbaImport(path)
 Set objModule = Application.VBE.ActiveVBProject.VBComponents.Import(path)
 objModule.Name = "UserForm1"
 Debug.Print ("UserForm1 imported")
-End Function
+End Sub
 
 Sub ConvertGitHubFileForVbaImport(FilePath As String)
 

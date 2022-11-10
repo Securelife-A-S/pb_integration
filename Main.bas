@@ -30,7 +30,27 @@ Dim path As String
 Dim objModule As Object
 
 path = strPath & "\pb_integration-main\pensionBrokerExport.bas"
-Call ConvertGitHubFileForVbaImport(path)
+
+'Read content of the file with utf-8 encoding
+Dim Content As String
+With CreateObject("ADODB.Stream")
+    .Type = 2  ' Private Const adTypeText = 2
+    .Charset = "utf-8"
+    .Open
+    .LoadFromFile path
+    Content = .ReadText(-1)  ' Private Const adReadAll = -1
+    .Close
+End With
+
+'Replace Unix-style line endings with Windows-style line endings (Need to check if that applies to your file)
+If InStr(Content, Chr$(13) & Chr$(10)) = 0 Then
+    Content = Replace(Content, Chr$(10), Chr$(13) & Chr$(10))
+End If
+
+'Write file with default local ANSI encoding (generally Windows-1252 on Western/U.S. systems)
+Open path For Output As #1
+Print #1, Content
+Close #1
 Set objModule = Application.VBE.ActiveVBProject.VBComponents.Import(path)
 objModule.Name = "PensionBrokerExport"
 Debug.Print ("PensionBrokerExport imported")
@@ -41,35 +61,35 @@ Sub addUserForm(strPath As String)
 Dim path As String
 Dim objModule As Object
 path = strPath & "\pb_integration-main\UserForm1.frm"
-Call ConvertGitHubFileForVbaImport(path)
+
+'Read content of the file with utf-8 encoding
+Dim Content As String
+With CreateObject("ADODB.Stream")
+    .Type = 2  ' Private Const adTypeText = 2
+    .Charset = "utf-8"
+    .Open
+    .LoadFromFile path
+    Content = .ReadText(-1)  ' Private Const adReadAll = -1
+    .Close
+End With
+
+'Replace Unix-style line endings with Windows-style line endings (Need to check if that applies to your file)
+If InStr(Content, Chr$(13) & Chr$(10)) = 0 Then
+    Content = Replace(Content, Chr$(10), Chr$(13) & Chr$(10))
+End If
+
+'Write file with default local ANSI encoding (generally Windows-1252 on Western/U.S. systems)
+Open path For Output As #1
+Print #1, Content
+Close #1
+
+
 Set objModule = Application.VBE.ActiveVBProject.VBComponents.Import(path)
 objModule.Name = "UserForm1"
 Debug.Print ("UserForm1 imported")
 End Sub
 
-Sub ConvertGitHubFileForVbaImport(FilePath As String)
 
-    'Read content of the file with utf-8 encoding
-    Dim Content As String
-    With CreateObject("ADODB.Stream")
-        .Type = 2  ' Private Const adTypeText = 2
-        .Charset = "utf-8"
-        .Open
-        .LoadFromFile FilePath
-        Content = .ReadText(-1)  ' Private Const adReadAll = -1
-        .Close
-    End With
-
-    'Replace Unix-style line endings with Windows-style line endings (Need to check if that applies to your file)
-    If InStr(Content, Chr$(13) & Chr$(10)) = 0 Then
-        Content = Replace(Content, Chr$(10), Chr$(13) & Chr$(10))
-    End If
-
-    'Write file with default local ANSI encoding (generally Windows-1252 on Western/U.S. systems)
-    Open FilePath For Output As #1
-    Print #1, Content
-    Close #1
-End Sub
 
 Sub init()
 Dim strPath As String

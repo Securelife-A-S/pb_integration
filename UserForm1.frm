@@ -84,8 +84,8 @@ Dim cellIndex As Integer
 cellIndex = 6
 ' Adding data to Stamoplysninger sheet
 For i = 6 To 23
-    If cellIndex = 14 Then ' Salary must be calcuated to year-salary not montly
-        value = Cells(cellIndex, 3).value * 12 
+    If cellIndex = 14 Then ' Salary must be converted to montly-salary not year
+        value = Cells(cellIndex, 3).value / 12
         key = Cells(cellIndex, 2).value
     ElseIf cellIndex = 15 Then
         value = Cells(cellIndex, 3).value * 100
@@ -241,6 +241,8 @@ If answer = vbYes Then
     For i = 6 To 23
         If cellIndex = 15 Then
             Cells(cellIndex, 3).value = JsonObject(Cells(cellIndex, 2).value) / 100
+        ElseIf cellIndex = 14 Then
+            Cells(cellIndex, 3).value = JsonObject(Cells(cellIndex, 2).value) * 12 ' Convert monthly salary to year salary
         ElseIf cellIndex = 16 Then
             Cells(cellIndex, 3).value = JsonObject(Cells(cellIndex, 2).value) / 100
         Else

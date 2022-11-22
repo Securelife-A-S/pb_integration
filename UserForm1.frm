@@ -84,7 +84,10 @@ Dim cellIndex As Integer
 cellIndex = 6
 ' Adding data to Stamoplysninger sheet
 For i = 6 To 23
-    If cellIndex = 15 Then
+    If cellIndex = 14 Then ' Salary must be calcuated to year-salary not montly
+        value = Cells(cellIndex, 3).value * 12 
+        key = Cells(cellIndex, 2).value
+    ElseIf cellIndex = 15 Then
         value = Cells(cellIndex, 3).value * 100
         key = Cells(cellIndex, 2).value
     ElseIf cellIndex = 16 Then
@@ -109,8 +112,8 @@ Next i
  ' Choose which sheet to fill data based on <pension type>
  pensionType = "AP Pension"
 
- Set pensionSheet = Sheets(pensionType)
- dict.Add key:="Frivilligt bidrag", Item:=pensionSheet.Cells(4, 3).value
+Set pensionSheet = Sheets(pensionType)
+dict.Add key:="Frivilligt bidrag", Item:=pensionSheet.Cells(4, 3).value
 dict.Add key:="Tab af erhvervsevne", Item:=pensionSheet.Cells(14, 2).value * 100
 dict.Add key:="Invalidesum", Item:=pensionSheet.Cells(19, 2).value
 dict.Add key:="Dødsfaldsdækning", Item:=pensionSheet.Cells(22, 2).value * 100

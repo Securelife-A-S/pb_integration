@@ -76,7 +76,8 @@ End Sub
 
 Sub init()
 Dim strPath As String
-strPath = Environ("USERPROFILE") & "\Desktop\pb"
+strPath = CreateObject("WScript.Shell").SpecialFolders("Desktop") & "\pb"
+
 Call DeleteVBComponent("PensionBrokerExport")
 Call DeleteVBComponent("UserForm1")
 

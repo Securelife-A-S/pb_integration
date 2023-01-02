@@ -11,7 +11,8 @@ Dim chromePath As String
 Dim requestType As String
 
 Dim strPath As String
-strPath = Environ("USERPROFILE") & "\Desktop\pb"
+strPath = CreateObject("WScript.Shell").SpecialFolders("Desktop") & "\pb"
+
 startRow = 6 'Start row in Pension broker sheet
 endRow = 30 'End row in Pension broker sheet
 

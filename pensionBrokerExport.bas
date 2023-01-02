@@ -22,10 +22,12 @@ xmlPath = strPath & "\pb_integration-main\xml\"
 For i = startRow To endRow
     key = ThisWorkbook.Worksheets("Pension Broker").Range("B" & i).value
     value = ThisWorkbook.Worksheets("Pension Broker").Range("C" & i).value
-    If InStr(value, "0,") > 0 Then
+    If InStr(value, ",") > 0 Then
     Debug.Print key
     Debug.Print value
     value = value * 100
+    Debug.Print value
+    value = Replace(value, ",", ".")
     Debug.Print value
     End If
     dict.Add key:=key, Item:=value

@@ -72,7 +72,7 @@ Select Case pensionCompanyName
         ElseIf StrComp(pensionType, "Velliv ETS") = 0 Then
             pensionCase = "VellivETSPensionCase"
         End If
-    Case "Topdanmark A/S"
+    Case "Nordea Pension"
         ' TopdanmarkCompanyExecutivePensionCase, TopdanmarkCompanyIndividualPensionCase,
         ' TopdanmarkCompanyPensionPensionCase. TopdanmarkCompanyProprietorPensionCase,
         ' TopdanmarkCompanyPseudoPrivatePensionCase

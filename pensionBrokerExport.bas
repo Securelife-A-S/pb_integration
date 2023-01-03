@@ -23,13 +23,16 @@ xmlPath = strPath & "\pb_integration-main\xml\"
 For i = startRow To endRow
     key = ThisWorkbook.Worksheets("Pension Broker").Range("B" & i).value
     value = ThisWorkbook.Worksheets("Pension Broker").Range("C" & i).value
-    If InStr(value, ",") > 0 Then
+    If InStr(value, "0,") > 0 Then
     Debug.Print key
     Debug.Print value
     value = value * 100
     Debug.Print value
-    value = Replace(value, ",", ".")
+    
     Debug.Print value
+    End If
+    If InStr(value, ",") > 0 Then
+    value = Replace(value, ",", ".")
     End If
     dict.Add key:=key, Item:=value
 Next i
@@ -73,7 +76,7 @@ Select Case pensionCompanyName
         ' TopdanmarkCompanyExecutivePensionCase, TopdanmarkCompanyIndividualPensionCase,
         ' TopdanmarkCompanyPensionPensionCase. TopdanmarkCompanyProprietorPensionCase,
         ' TopdanmarkCompanyPseudoPrivatePensionCase
-        pensionType = dict("Produkt Topdanmark A/S") '<--- Pensionsselskab navn
+        pensionType = dict("Produkt Nordea Pension") '<--- Pensionsselskab navn
         If StrComp(pensionType, "FirmaPension") = 0 Then
             pensionCase = "TopdanmarkCompanyPensionPensionCase"
         ElseIf StrComp(pensionType, "Individuel firmaordning Profilpension/Link/Spar Top") = 0 Then
@@ -448,7 +451,6 @@ Select Case pensionCase
         xmlRoot.SelectSingleNode("CriticalDiseaseFixedAmount").text = myVar
         myVar = dict("Børnerente") '<--- Børnerente
         xmlRoot.SelectSingleNode("ChildPensionPercent").text = myVar
-        xmlRoot.SelectSingleNode("WorkAbilityLossTaxCode").text = "TaxCode1"
         xmlRoot.SelectSingleNode("DeathTaxCode").text = "TaxCode5"
     
     Case "TopdanmarkCompanyPseudoPrivatePensionCase" ' <-- BROKEN
@@ -526,6 +528,7 @@ Shell IIf(Left(Application.OperatingSystem, 3) = "Win", "explorer ", "open ") & 
 
 Debug.Print "DONE"
 End Sub
+
 
 
 

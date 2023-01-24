@@ -106,7 +106,7 @@ For i = 6 To 23
     End If
 Next i
 
- Dim pensionSheet As Worksheet
+ Dim pensionSheet As worksheet
  Dim pensionType As String
  Dim priceGroup As String
  ' Choose which sheet to fill data based on <pension type>
@@ -146,8 +146,6 @@ End Sub
 
 
 Private Sub ImportButton_Click()
-
-
 
 Dim JsonObject As Object
 Dim objRequest As Object
@@ -231,46 +229,23 @@ For Each key In JsonObject.keys
     text = text + " " + key + ": " + val + vbNewLine
 Next
 
+Dim sheetName As String
+sheetName = "Portal import-eksport"
+Dim worksheet As worksheet
+
+Set worksheet = Sheets(sheetName)
 
 Dim answer As Integer
 answer = MsgBox(text, vbQuestion + vbYesNo + vbDefaultButton2, "Import af medarbejderen")
 If answer = vbYes Then
     Dim cellIndex As Integer
-    cellIndex = 6
+    cellIndex = 2
     ' Adding data to Stamoplysninger sheet
-    For i = 6 To 23
-        If cellIndex = 15 Then
-            Cells(cellIndex, 3).value = JsonObject(Cells(cellIndex, 2).value) / 100
-        ElseIf cellIndex = 14 Then
-            Cells(cellIndex, 3).value = JsonObject(Cells(cellIndex, 2).value) * 12 ' Convert monthly salary to year salary
-        ElseIf cellIndex = 16 Then
-            Cells(cellIndex, 3).value = JsonObject(Cells(cellIndex, 2).value) / 100
-        Else
-            Cells(cellIndex, 3).value = JsonObject(Cells(cellIndex, 2).value)
-        End If
+    For i = 2 To 44
+        worksheet.Cells(cellIndex, 2).value = JsonObject(worksheet.Cells(cellIndex, 1).value)
         cellIndex = cellIndex + 1
-        If cellIndex = 13 Then
-            cellIndex = cellIndex + 1 ' Skip row 13 (alder)
-        End If
     Next i
     
-    Dim pensionSheet As Worksheet
-    Dim pensionType As String
-    Dim priceGroup As String
-    ' Choose which sheet to fill data based on <pension type>
-    pensionType = JsonObject("Pension type")
-   
-    sheetExist (pensionType)
-
-    Set pensionSheet = Sheets(pensionType)
-    pensionSheet.Cells(4, 3).value = JsonObject("Frivilligt bidrag") / 100
-    pensionSheet.Cells(14, 2).value = JsonObject("Tab af erhvervsevne") / 100
-    pensionSheet.Cells(19, 2).value = JsonObject("Invalidesum")
-    pensionSheet.Cells(22, 2).value = JsonObject("Dødsfaldsdækning") / 100
-    pensionSheet.Cells(26, 2).value = JsonObject("Børnerente")
-    pensionSheet.Cells(29, 2).value = JsonObject("Kritisk sygdom")
-    pensionSheet.Cells(32, 2).value = JsonObject("Kritisk sygdom til børn u. 21 år")
-    pensionSheet.Cells(3, 11).value = JsonObject("Prisgruppe")
     MsgBox "Import OK"
     UserForm1.Hide
 Else
@@ -279,4 +254,5 @@ End If
 
 
 End Sub
+
 

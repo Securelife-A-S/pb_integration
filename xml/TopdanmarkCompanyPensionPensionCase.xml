@@ -13,8 +13,8 @@
 		</PensionTaker>
 		<Contribution>
 			<AnnualSalary></AnnualSalary>
-			<MandatoryContribution></MandatoryContribution>
-			<OptionalContribution></OptionalContribution>
+			<EmployerContribution></EmployerContribution>
+			<EmployeeContribution></EmployeeContribution>
 		</Contribution>
 		<Investment>
 		</Investment>

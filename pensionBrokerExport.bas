@@ -242,12 +242,11 @@ Select Case pensionCase
         ' xmlRoot.SelectSingleNode("OptionalContributionStartDate").Text = today
         
     Case "TopdanmarkCompanyPensionPensionCase"
-        myVar = dict("Obligatorisk arbejdsgiverbidrag") + dict("Obligatorisk medarbejderbidrag")  '<--- Samlet obligatorisk arbejdsgiver og medarbejderbidrag
-        xmlRoot.SelectSingleNode("MandatoryContribution").text = myVar
-        myVar = dict("Frivilligtbidrag") '<--- Frivilligtbidrag
-        xmlRoot.SelectSingleNode("OptionalContribution").text = myVar
-        ' xmlRoot.SelectSingleNode("OptionalContributionStartDate").Text = today
-        
+         myVar = dict("Obligatorisk arbejdsgiverbidrag")
+         xmlRoot.SelectSingleNode("EmployerContribution").text = myVar
+         myVar = dict("Obligatorisk medarbejderbidrag")
+         xmlRoot.SelectSingleNode("EmployeeContribution").text = myVar
+       
          
     Case "TopdanmarkCompanyPseudoPrivatePensionCase"
          myVar = dict("Obligatorisk arbejdsgiverbidrag")

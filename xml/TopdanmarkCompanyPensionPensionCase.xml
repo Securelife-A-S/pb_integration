@@ -15,6 +15,7 @@
 			<AnnualSalary></AnnualSalary>
 			<EmployerContribution></EmployerContribution>
 			<EmployeeContribution></EmployeeContribution>
+			<OptionalContribution></OptionalContribution>
 		</Contribution>
 		<Investment>
 		</Investment>

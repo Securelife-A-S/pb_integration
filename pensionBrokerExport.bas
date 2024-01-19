@@ -1,4 +1,4 @@
-Sub ExportToPensionBroker()
+TSub ExportToPensionBroker()
 
 ' ### Step 1: Load data from pension broker sheet and parse to dict ###
 Dim key As Variant
@@ -246,6 +246,8 @@ Select Case pensionCase
          xmlRoot.SelectSingleNode("EmployerContribution").text = myVar
          myVar = dict("Obligatorisk medarbejderbidrag")
          xmlRoot.SelectSingleNode("EmployeeContribution").text = myVar
+         myVar = dict("Frivilligtbidrag") '<--- Frivilligtbidrag
+         xmlRoot.SelectSingleNode("OptionalContribution").text = myVar
        
          
     Case "TopdanmarkCompanyPseudoPrivatePensionCase"

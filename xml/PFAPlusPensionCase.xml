@@ -4,6 +4,7 @@
 		<CPR></CPR>
 		<RequestType></RequestType>
 		<CVR></CVR>
+		<PolicyNo></PolicyNo>
 		<PensionTaker>
 			<FirstName></FirstName>
 			<LastName></LastName>

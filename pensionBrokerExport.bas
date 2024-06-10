@@ -28,6 +28,8 @@ For i = startRow To endRow
     Debug.Print value
     value = value * 100
     Debug.Print value
+    
+    Debug.Print value
     End If
     If InStr(value, ",") > 0 Then
     value = Replace(value, ",", ".")
@@ -130,7 +132,6 @@ myVar = dict("CPR nr.") '<--- Efternavn
 xmlRoot.SelectSingleNode("CPR").text = myVar
 myVar = dict("Type af begæring")
 
-
 If InStr(myVar, "Nytegning") > 0 Then
 myVar = "Subscription"
 End If
@@ -142,7 +143,7 @@ End If
 xmlRoot.SelectSingleNode("RequestType").text = myVar
 Call xmlDoc.Save(tmpPath)
 
-Debug.Print "HELLO"
+
 If InStr(pensionCase, "PFAPlusPensionCase") > 0 Then
 myVar = dict("PolicyNo")
 xmlRoot.SelectSingleNode("PolicyNo").text = myVar
@@ -179,9 +180,7 @@ xmlRoot.SelectSingleNode("AnnualSalary").text = myVar
 Debug.Print (pensionCase)
 ' today = Format(DateSerial(Year(Date), Month(Date) + 1, 1), "YYYY-DD-MM")
 ' Debug.Print today
-' Convert string values to numbers
-Dim arbejdsgiverBidrag As Double
-Dim medarbejderBidrag As Double
+
 Select Case pensionCase
     Case "APPensionPensionCase"
         myVar = dict("Obligatorisk arbejdsgiverbidrag")
@@ -200,8 +199,6 @@ Select Case pensionCase
         myVar = dict("Frivilligtbidrag") '<--- Frivilligtbidrag
         xmlRoot.SelectSingleNode("OptionalContribution").text = myVar
         ' xmlRoot.SelectSingleNode("OptionalContributionStartDate").Text = today
-        myVar = dict("PolicyNo") '<--- Frivilligtbidrag
-        
         
     Case "DanicaPensionCase"
         myVar = dict("Obligatorisk arbejdsgiverbidrag") + dict("Obligatorisk medarbejderbidrag")  '<--- Samlet obligatorisk arbejdsgiver og medarbejderbidrag
@@ -216,18 +213,10 @@ Select Case pensionCase
         
         
     Case "VellivN16PensionCase"
-        
-        arbejdsgiverBidrag = CDbl(dict("Obligatorisk arbejdsgiverbidrag"))
-        medarbejderBidrag = CDbl(dict("Obligatorisk medarbejderbidrag"))
-        
-        ' Add the values
-        myVar = (arbejdsgiverBidrag + medarbejderBidrag) / 100  '<--- Samlet obligatorisk arbejdsgiver og medarbejderbidrag
-
+        myVar = dict("Obligatorisk arbejdsgiverbidrag") + dict("Obligatorisk medarbejderbidrag")  '<--- Samlet obligatorisk arbejdsgiver og medarbejderbidrag
         xmlRoot.SelectSingleNode("MandatoryContribution").text = myVar
-        
         myVar = dict("Frivilligtbidrag") '<--- Frivilligtbidrag
         xmlRoot.SelectSingleNode("OptionalContribution").text = myVar
-        
         ' xmlRoot.SelectSingleNode("OptionalContributionStartDate").Text = today
         myVar = dict("Løn")
         xmlRoot.SelectSingleNode("BonusSalary").text = myVar
@@ -254,34 +243,28 @@ Select Case pensionCase
         ' No optional contribution
         
     Case "VellivLivPensionCase"
-        arbejdsgiverBidrag = CDbl(dict("Obligatorisk arbejdsgiverbidrag"))
-        medarbejderBidrag = CDbl(dict("Obligatorisk medarbejderbidrag"))
-        
-        ' Add the values
-        myVar = (arbejdsgiverBidrag + medarbejderBidrag) / 100  '<--- Samlet obligatorisk arbejdsgiver og medarbejderbidrag
-
+        myVar = dict("Obligatorisk arbejdsgiverbidrag") + dict("Obligatorisk medarbejderbidrag")  '<--- Samlet obligatorisk arbejdsgiver og medarbejderbidrag
         xmlRoot.SelectSingleNode("MandatoryContribution").text = myVar
-        
         myVar = dict("Frivilligtbidrag") '<--- Frivilligtbidrag
         xmlRoot.SelectSingleNode("OptionalContribution").text = myVar
         ' xmlRoot.SelectSingleNode("OptionalContributionStartDate").Text = today
         
     Case "TopdanmarkCompanyPensionPensionCase"
-        myVar = dict("Obligatorisk arbejdsgiverbidrag")
-        xmlRoot.SelectSingleNode("EmployerContribution").text = myVar
-        myVar = dict("Obligatorisk medarbejderbidrag")
-        xmlRoot.SelectSingleNode("EmployeeContribution").text = myVar
-        myVar = dict("Frivilligtbidrag") '<--- Frivilligtbidrag
-        xmlRoot.SelectSingleNode("OptionalContribution").text = myVar
+         myVar = dict("Obligatorisk arbejdsgiverbidrag")
+         xmlRoot.SelectSingleNode("EmployerContribution").text = myVar
+         myVar = dict("Obligatorisk medarbejderbidrag")
+         xmlRoot.SelectSingleNode("EmployeeContribution").text = myVar
+         myVar = dict("Frivilligtbidrag") '<--- Frivilligtbidrag
+         xmlRoot.SelectSingleNode("OptionalContribution").text = myVar
        
          
     Case "TopdanmarkCompanyPseudoPrivatePensionCase"
-        myVar = dict("Obligatorisk arbejdsgiverbidrag")
-        xmlRoot.SelectSingleNode("EmployerContribution").text = myVar
-        myVar = dict("Obligatorisk medarbejderbidrag")
-        xmlRoot.SelectSingleNode("EmployeeContribution").text = myVar
-        If dict("Frivilligtbidrag") > 0 Then
-           xmlRoot.SelectSingleNode("PremiumWaiver").text = "True"
+         myVar = dict("Obligatorisk arbejdsgiverbidrag")
+         xmlRoot.SelectSingleNode("EmployerContribution").text = myVar
+         myVar = dict("Obligatorisk medarbejderbidrag")
+         xmlRoot.SelectSingleNode("EmployeeContribution").text = myVar
+         If dict("Frivilligtbidrag") > 0 Then
+            xmlRoot.SelectSingleNode("PremiumWaiver").text = "True"
         Else
             Debug.Print "Deleting premiumwaiver"
             Set deleteMe = xmlRoot.SelectSingleNode("PremiumWaiver")
@@ -289,12 +272,12 @@ Select Case pensionCase
         End If
         
     Case "TopdanmarkCompanyIndividualPensionCase"
-        myVar = dict("Obligatorisk arbejdsgiverbidrag")
-        xmlRoot.SelectSingleNode("EmployerContribution").text = myVar
-        myVar = dict("Obligatorisk medarbejderbidrag")
-        xmlRoot.SelectSingleNode("EmployeeContribution").text = myVar
-        If dict("Frivilligtbidrag") > 0 Then
-           xmlRoot.SelectSingleNode("PremiumWaiver").text = "True"
+         myVar = dict("Obligatorisk arbejdsgiverbidrag")
+         xmlRoot.SelectSingleNode("EmployerContribution").text = myVar
+         myVar = dict("Obligatorisk medarbejderbidrag")
+         xmlRoot.SelectSingleNode("EmployeeContribution").text = myVar
+         If dict("Frivilligtbidrag") > 0 Then
+            xmlRoot.SelectSingleNode("PremiumWaiver").text = "True"
         Else
             Debug.Print "Deleting premiumwaiver"
             Set deleteMe = xmlRoot.SelectSingleNode("PremiumWaiver")
@@ -302,19 +285,12 @@ Select Case pensionCase
         End If
     
     Case "TopdanmarkCompanyExecutivePensionCase" < --BROKEN
-        
-        arbejdsgiverBidrag = CDbl(dict("Obligatorisk arbejdsgiverbidrag"))
-        medarbejderBidrag = CDbl(dict("Obligatorisk medarbejderbidrag"))
-        
-        ' Add the values
-        myVar = (arbejdsgiverBidrag + medarbejderBidrag) / 100  '<--- Samlet obligatorisk arbejdsgiver og medarbejderbidrag
-
-        xmlRoot.SelectSingleNode("MandatoryContribution").text = myVar
-        
-        myVar = dict("Frivilligtbidrag") '<--- Frivilligtbidrag
-        xmlRoot.SelectSingleNode("OptionalContribution").text = myVar
-        If dict("Frivilligtbidrag") > 0 Then
-           xmlRoot.SelectSingleNode("PremiumWaiver").text = "True"
+         myVar = dict("Obligatorisk arbejdsgiverbidrag") + dict("Obligatorisk medarbejderbidrag")  '<--- Samlet obligatorisk arbejdsgiver og medarbejderbidrag
+         xmlRoot.SelectSingleNode("MandatoryContribution").text = myVar
+         myVar = dict("Frivilligtbidrag") '<--- Frivilligtbidrag
+         xmlRoot.SelectSingleNode("OptionalContribution").text = myVar
+         If dict("Frivilligtbidrag") > 0 Then
+            xmlRoot.SelectSingleNode("PremiumWaiver").text = "True"
         Else
             Debug.Print "Deleting premiumwaiver"
             Set deleteMe = xmlRoot.SelectSingleNode("PremiumWaiver")
@@ -322,18 +298,12 @@ Select Case pensionCase
         End If
          
     Case "TopdanmarkCompanyProprietorPensionCase" < --BROKEN
-        arbejdsgiverBidrag = CDbl(dict("Obligatorisk arbejdsgiverbidrag"))
-        medarbejderBidrag = CDbl(dict("Obligatorisk medarbejderbidrag"))
-        
-        ' Add the values
-        myVar = (arbejdsgiverBidrag + medarbejderBidrag) / 100  '<--- Samlet obligatorisk arbejdsgiver og medarbejderbidrag
-
-        xmlRoot.SelectSingleNode("MandatoryContribution").text = myVar
-        
-        myVar = dict("Frivilligtbidrag") '<--- Frivilligtbidrag
-        xmlRoot.SelectSingleNode("OptionalContribution").text = myVar
-        If dict("Frivilligtbidrag") > 0 Then
-           xmlRoot.SelectSingleNode("PremiumWaiver").text = "True"
+         myVar = dict("Obligatorisk arbejdsgiverbidrag") + dict("Obligatorisk medarbejderbidrag")  '<--- Samlet obligatorisk arbejdsgiver og medarbejderbidrag
+         xmlRoot.SelectSingleNode("MandatoryContribution").text = myVar
+         myVar = dict("Frivilligtbidrag") '<--- Frivilligtbidrag
+         xmlRoot.SelectSingleNode("OptionalContribution").text = myVar
+         If dict("Frivilligtbidrag") > 0 Then
+            xmlRoot.SelectSingleNode("PremiumWaiver").text = "True"
         Else
             Debug.Print "Deleting premiumwaiver"
             Set deleteMe = xmlRoot.SelectSingleNode("PremiumWaiver")
@@ -567,8 +537,6 @@ Shell IIf(Left(Application.OperatingSystem, 3) = "Win", "explorer ", "open ") & 
 
 Debug.Print "DONE"
 End Sub
-
-
 
 
 

@@ -33,6 +33,9 @@ For i = startRow To endRow
     End If
     If InStr(value, ",") > 0 Then
     value = Replace(value, ",", ".")
+    Debug.Print key
+    Debug.Print value
+    
     End If
     dict.Add key:=key, Item:=value
 Next i
@@ -180,6 +183,8 @@ xmlRoot.SelectSingleNode("AnnualSalary").text = myVar
 Debug.Print (pensionCase)
 ' today = Format(DateSerial(Year(Date), Month(Date) + 1, 1), "YYYY-DD-MM")
 ' Debug.Print today
+Dim arbejdsgiverBidrag As Double
+Dim medarbejderBidrag As Double
 
 Select Case pensionCase
     Case "APPensionPensionCase"
@@ -201,7 +206,23 @@ Select Case pensionCase
         ' xmlRoot.SelectSingleNode("OptionalContributionStartDate").Text = today
         
     Case "DanicaPensionCase"
-        myVar = dict("Obligatorisk arbejdsgiverbidrag") + dict("Obligatorisk medarbejderbidrag")  '<--- Samlet obligatorisk arbejdsgiver og medarbejderbidrag
+            ' Handle conversion of values with commas
+        If InStr(dict("Obligatorisk medarbejderbidrag"), ".") > 0 Then
+            dict("Obligatorisk medarbejderbidrag") = Replace(dict("Obligatorisk medarbejderbidrag"), ".", ",")
+        End If
+        
+        If InStr(dict("Obligatorisk arbejdsgiverbidrag"), ".") > 0 Then
+            dict("Obligatorisk arbejdsgiverbidrag") = Replace(dict("Obligatorisk arbejdsgiverbidrag"), ".", ",")
+        End If
+        
+        arbejdsgiverBidrag = CDbl(dict("Obligatorisk arbejdsgiverbidrag"))
+        medarbejderBidrag = CDbl(dict("Obligatorisk medarbejderbidrag"))
+        
+        ' Add the values
+        myVar = (arbejdsgiverBidrag + medarbejderBidrag)  '<--- Samlet obligatorisk arbejdsgiver og medarbejderbidrag
+        If InStr(myVar, ",") > 0 Then
+            myVar = Replace(myVar, ",", ".")
+        End If
         xmlRoot.SelectSingleNode("MandatoryContribution").text = myVar
         myVar = dict("Frivilligtbidrag") '<--- Frivilligtbidrag
         xmlRoot.SelectSingleNode("OptionalContribution").text = myVar
@@ -213,7 +234,25 @@ Select Case pensionCase
         
         
     Case "VellivN16PensionCase"
-        myVar = dict("Obligatorisk arbejdsgiverbidrag") + dict("Obligatorisk medarbejderbidrag")  '<--- Samlet obligatorisk arbejdsgiver og medarbejderbidrag
+            
+            ' Handle conversion of values with commas
+        If InStr(dict("Obligatorisk medarbejderbidrag"), ".") > 0 Then
+            dict("Obligatorisk medarbejderbidrag") = Replace(dict("Obligatorisk medarbejderbidrag"), ".", ",")
+        End If
+        
+        If InStr(dict("Obligatorisk arbejdsgiverbidrag"), ".") > 0 Then
+            dict("Obligatorisk arbejdsgiverbidrag") = Replace(dict("Obligatorisk arbejdsgiverbidrag"), ".", ",")
+        End If
+        
+        arbejdsgiverBidrag = CDbl(dict("Obligatorisk arbejdsgiverbidrag"))
+        medarbejderBidrag = CDbl(dict("Obligatorisk medarbejderbidrag"))
+        
+        ' Add the values
+        myVar = (arbejdsgiverBidrag + medarbejderBidrag)  '<--- Samlet obligatorisk arbejdsgiver og medarbejderbidrag
+        If InStr(myVar, ",") > 0 Then
+            myVar = Replace(myVar, ",", ".")
+        End If
+
         xmlRoot.SelectSingleNode("MandatoryContribution").text = myVar
         myVar = dict("Frivilligtbidrag") '<--- Frivilligtbidrag
         xmlRoot.SelectSingleNode("OptionalContribution").text = myVar
@@ -243,7 +282,23 @@ Select Case pensionCase
         ' No optional contribution
         
     Case "VellivLivPensionCase"
-        myVar = dict("Obligatorisk arbejdsgiverbidrag") + dict("Obligatorisk medarbejderbidrag")  '<--- Samlet obligatorisk arbejdsgiver og medarbejderbidrag
+            ' Handle conversion of values with commas
+        If InStr(dict("Obligatorisk medarbejderbidrag"), ".") > 0 Then
+            dict("Obligatorisk medarbejderbidrag") = Replace(dict("Obligatorisk medarbejderbidrag"), ".", ",")
+        End If
+        
+        If InStr(dict("Obligatorisk arbejdsgiverbidrag"), ".") > 0 Then
+            dict("Obligatorisk arbejdsgiverbidrag") = Replace(dict("Obligatorisk arbejdsgiverbidrag"), ".", ",")
+        End If
+        
+        arbejdsgiverBidrag = CDbl(dict("Obligatorisk arbejdsgiverbidrag"))
+        medarbejderBidrag = CDbl(dict("Obligatorisk medarbejderbidrag"))
+        
+        ' Add the values
+        myVar = (arbejdsgiverBidrag + medarbejderBidrag)  '<--- Samlet obligatorisk arbejdsgiver og medarbejderbidrag
+        If InStr(myVar, ",") > 0 Then
+            myVar = Replace(myVar, ",", ".")
+        End If  '<--- Samlet obligatorisk arbejdsgiver og medarbejderbidrag
         xmlRoot.SelectSingleNode("MandatoryContribution").text = myVar
         myVar = dict("Frivilligtbidrag") '<--- Frivilligtbidrag
         xmlRoot.SelectSingleNode("OptionalContribution").text = myVar
@@ -537,6 +592,7 @@ Shell IIf(Left(Application.OperatingSystem, 3) = "Win", "explorer ", "open ") & 
 
 Debug.Print "DONE"
 End Sub
+
 
 
 

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <InputData xmlns="http://schemas.visma.com/PensionBroker/InputData/2017/10" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
-	<PensionCase xsi:type="DanicaPensionCase">
+	<PensionCase xsi:type="DanicaCompanyPensionCase">
 		<CPR></CPR>
 		<RequestType></RequestType>
 		<CVR></CVR>

@@ -63,7 +63,7 @@ Select Case pensionCompanyName
         pensionCase = "EuroAccidentCompanyPensionCase"
     Case "Danica Pension"
         ' DanicaPensionCase
-        pensionCase = "DanicaPensionCase"
+        pensionCase = "DanicaCompanyPensionCase"
     Case "Velliv"
         ' VellivETSPensionCase,VellivLandmandspensionPensionCase, VellivLivPensionCase, VellivN16PensionCase
         pensionType = dict("Produkt Velliv") '<--- Pensionsselskab navn
@@ -205,7 +205,7 @@ Select Case pensionCase
         xmlRoot.SelectSingleNode("OptionalContribution").text = myVar
         ' xmlRoot.SelectSingleNode("OptionalContributionStartDate").Text = today
         
-    Case "DanicaPensionCase"
+    Case "DanicaCompanyPensionCase"
             ' Handle conversion of values with commas
         If InStr(dict("Obligatorisk medarbejderbidrag"), ".") > 0 Then
             dict("Obligatorisk medarbejderbidrag") = Replace(dict("Obligatorisk medarbejderbidrag"), ".", ",")
@@ -407,7 +407,7 @@ Select Case pensionCase
         xmlRoot.SelectSingleNode("WorkAbilityLossTaxCode").text = "TaxCode1"
         xmlRoot.SelectSingleNode("DeathTaxCode").text = "TaxCode5"
 
-    Case "DanicaPensionCase"
+    Case "DanicaCompanyPensionCase"
         myVar = dict("Dødsfald") '<--- Dødsfald
         xmlRoot.SelectSingleNode("DeathPercent").text = myVar
         myVar = dict("Tab af erhvervsevne") '<--- Tab af erhvervsevne
@@ -592,6 +592,7 @@ Shell IIf(Left(Application.OperatingSystem, 3) = "Win", "explorer ", "open ") & 
 
 Debug.Print "DONE"
 End Sub
+
 
 
 

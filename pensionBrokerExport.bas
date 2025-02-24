@@ -259,13 +259,10 @@ Select Case pensionCase
         ' xmlRoot.SelectSingleNode("OptionalContributionStartDate").Text = today
         myVar = dict("Løn")
         xmlRoot.SelectSingleNode("BonusSalary").text = myVar
-        If dict("Frivilligtbidrag") > 0 Then
-            xmlRoot.SelectSingleNode("PremiumWaiver").text = "True"
-        Else
-             Debug.Print "Deleting premiumwaiver"
-            Set deleteMe = xmlRoot.SelectSingleNode("PremiumWaiver")
-            Set oldChild = deleteMe.ParentNode.RemoveChild(deleteMe)
-        End If
+       
+        Debug.Print "Deleting premiumwaiver"
+        Set deleteMe = xmlRoot.SelectSingleNode("PremiumWaiver")
+        Set oldChild = deleteMe.ParentNode.RemoveChild(deleteMe)
          
     Case "VellivLandmandspensionPensionCase"
         myVar = dict("Obligatorisk arbejdsgiverbidrag")

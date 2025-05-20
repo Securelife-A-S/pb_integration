@@ -584,8 +584,7 @@ fullURL = """http://pensionbroker.dk/Client/Sirius.PensionBroker.Client.Shell.ap
 
 Debug.Print fullURL
 
-Shell IIf(Left(Application.OperatingSystem, 3) = "Win", "explorer ", "open ") & _
-    fullURL
+Shell "cmd /c start """" """ & fullURL & """", vbNormalFocus
 
 Debug.Print "DONE"
 End Sub

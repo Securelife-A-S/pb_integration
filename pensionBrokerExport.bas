@@ -579,8 +579,11 @@ End If
 ' ### Step 3: Export data to pension broker ###
 Dim fullURL As String
 
-fullURL = """http://pensionbroker.dk/Client/Sirius.PensionBroker.Client.Shell.application?inputfile=" & tmpPath & """"
-' fullURL = """http://pensionbrokerdemo.dk/Client/Sirius.PensionBroker.Client.Shell.application?inputfile=" & tmpPath & """"
+Dim encodedPath As String
+encodedPath = Replace(tmpPath, " ", "%20")
+
+fullURL = """http://pensionbroker.dk/Client/Sirius.PensionBroker.Client.Shell.application?inputfile=" & encodedPath & """"
+' fullURL = """http://pensionbrokerdemo.dk/Client/Sirius.PensionBroker.Client.Shell.application?inputfile=" & encodedPath & """"
 
 Debug.Print fullURL
 

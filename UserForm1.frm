@@ -241,7 +241,7 @@ If answer = vbYes Then
     Dim cellIndex As Integer
     cellIndex = 2
     ' Adding data to Stamoplysninger sheet
-    For i = 2 To 44
+    For i = 2 To 60
         worksheet.Cells(cellIndex, 2).value = JsonObject(worksheet.Cells(cellIndex, 1).value)
         cellIndex = cellIndex + 1
     Next i
@@ -254,5 +254,6 @@ End If
 
 
 End Sub
+
 
 

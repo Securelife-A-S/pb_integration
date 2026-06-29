@@ -29,7 +29,7 @@ If FSO.FolderExists(strPath) Then
         Debug.Print (strResult)
         Dim compResult As Integer
         
-        If StrComp(TextString, strResult) = 0 Then
+        If StrComp(Trim(TextString), Trim(strResult)) = 0 Then
         Debug.Print ("Version is up to date")
         versionIsOutdated = False
         Else
@@ -102,6 +102,25 @@ Dim ShellApp As Object
 Set ShellApp = CreateObject("Shell.Application")
 ShellApp.Namespace(strPath & "\").CopyHere ShellApp.Namespace(strPath & "\pb.zip").Items
 
+'CopyHere is asynchronous - wait until the extracted version.txt actually exists
+'before returning, otherwise the import that follows reads files that aren't there yet.
+Dim FSOWait As Object
+Dim extractedFile As String
+Dim waitCount As Integer
+Set FSOWait = CreateObject("Scripting.FileSystemObject")
+extractedFile = strPath & "\pb_integration-main\version.txt"
+waitCount = 0
+Do Until FSOWait.FileExists(extractedFile) Or waitCount >= 60
+    Application.Wait Now + TimeValue("0:00:01")
+    DoEvents
+    waitCount = waitCount + 1
+Loop
+
+If Not FSOWait.FileExists(extractedFile) Then
+    MsgBox "Udpakning af opdateringen tog for lang tid eller fejlede. Prøv at åbne arket igen.", vbExclamation
+    Exit Function
+End If
+
 Debug.Print ("Unpack done")
 End Function
 
@@ -146,7 +165,7 @@ End Function
 Sub Workbook_Open()
 
 Dim strPath As String
-strPath = Environ("USERPROFILE") & "\Desktop\pb"
+strPath = CreateObject("WScript.Shell").SpecialFolders("Desktop") & "\pb"
 Debug.Print (strPath)
 If versionIsOutdated(strPath) = True Then
     MsgBox "Der er kommet ny version - Downloading påbegyndt"

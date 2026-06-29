@@ -71,7 +71,7 @@ End If
 
 ' Map miljø-valg til admin-portal-v2 base-URL.
 If SecureLifeTestButton.value = True Then
-    strBaseUrl = "https://test2.portal.cpof.dk" ' TODO: bekræft public staging-URL
+    strBaseUrl = "https://test.portal.cpof.dk" ' TODO: bekræft public staging-URL
 Else
     strBaseUrl = "https://portal.cpof.dk" ' CPOF (prod) — aktiv bruger
 End If

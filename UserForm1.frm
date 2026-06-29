@@ -29,116 +29,9 @@ End Function
 
 Private Sub ExportButton_Click()
 
-Dim dict As New Scripting.Dictionary
-
-Dim JsonObject As Object
-Dim objRequest As Object
-Dim strUrl As String
-Dim blnAsync As Boolean
-Dim strResponse As String
-Dim codeResponse As String
-Dim responseStatus As Variant
-
-
-' Mandatory field
-If cprBox.value = "" Then
-    MsgBox "Du skal indsætte cprnummer", vbCritical
-    Exit Sub
-End If
- 
-
-' Mandatory field
-If apikeyBox.value = "" Then
-    MsgBox "Du skal indsætte api nøgle", vbCritical
-    Exit Sub
-End If
-
-If SecureLifeButton.value = False And BedstPensionButton.value = False And SecureLifeTestButton.value = False Then
-    MsgBox "Du skal vælge mellem bedstpension / securelife", vbCritical
-    Exit Sub
-End If
-
-Set objRequest = CreateObject("MSXML2.XMLHTTP")
-
-If SecureLifeButton = True Then
-    Debug.Print ("Securelife")
-               strUrl = "https://europe-west1-life-prod-e2f1e.cloudfunctions.net/integration/excel/" & cprBox.value
-End If
-
-If BedstPensionButton = True Then
-    Debug.Print ("Bedstpension")
-    strUrl = "https://europe-west1-bedstpension-prod.cloudfunctions.net/integration/excel/" & cprBox.value
-End If
-
-
-If SecureLifeTestButton = True Then
-    Debug.Print ("Securelife test")
-    strUrl = "https://europe-west1-life-stage-e2fb7.cloudfunctions.net/integration/excel/" & cprBox.value
-End If
-
-
-Dim key As Variant
-Dim value As Variant
-
-Dim cellIndex As Integer
-cellIndex = 6
-' Adding data to Stamoplysninger sheet
-For i = 6 To 23
-    If cellIndex = 14 Then ' Salary must be converted to montly-salary not year
-        value = Cells(cellIndex, 3).value / 12
-        key = Cells(cellIndex, 2).value
-    ElseIf cellIndex = 15 Then
-        value = Cells(cellIndex, 3).value * 100
-        key = Cells(cellIndex, 2).value
-    ElseIf cellIndex = 16 Then
-        value = Cells(cellIndex, 3).value * 100
-        key = Cells(cellIndex, 2).value
-    Else
-        value = Cells(cellIndex, 3).value
-        key = Cells(cellIndex, 2).value
-    End If
-    cellIndex = cellIndex + 1
-    Debug.Print (key)
-    Debug.Print (value)
-    dict.Add key:=key, Item:=value
-    If cellIndex = 13 Then
-        cellIndex = cellIndex + 1 ' Skip row 13 (alder)
-    End If
-Next i
-
- Dim pensionSheet As worksheet
- Dim pensionType As String
- Dim priceGroup As String
- ' Choose which sheet to fill data based on <pension type>
- pensionType = "AP Pension"
-
-Set pensionSheet = Sheets(pensionType)
-dict.Add key:="Frivilligt bidrag", Item:=pensionSheet.Cells(4, 3).value
-dict.Add key:="Tab af erhvervsevne", Item:=pensionSheet.Cells(14, 2).value * 100
-dict.Add key:="Invalidesum", Item:=pensionSheet.Cells(19, 2).value
-dict.Add key:="Dødsfaldsdækning", Item:=pensionSheet.Cells(22, 2).value * 100
-dict.Add key:="Børnerente", Item:=pensionSheet.Cells(26, 2).value
-dict.Add key:="Kritisk sygdom", Item:=pensionSheet.Cells(29, 2).value
-dict.Add key:="Kritisk sygdom til børn u. 21 år", Item:=pensionSheet.Cells(32, 2).value
-dict.Add key:="Prisgruppe", Item:=pensionSheet.Cells(3, 2).value
-
-
-
-Dim text As String
-' Generate a text of key value pair for popup & printing the dict
-For Each key In dict
-    Dim val As Variant
-    If IsNull(dict(key)) Then
-        val = ""
-    Else
-        val = CStr(dict(key))
-    End If
-    text = text + " " + key + ": " + val + vbNewLine
-Next
-
-  
-Dim answer As Integer
-answer = MsgBox(text, vbQuestion + vbYesNo + vbDefaultButton2, "Import af medarbejderen")
+' admin-portal-v2-integrationen er skrivebeskyttet (intet PUT-endpoint).
+' Eksport til portalen understøttes ikke i denne version.
+MsgBox "Eksport til portalen understøttes ikke i denne version (skrivebeskyttet integration).", vbInformation
 
 End Sub
 
@@ -149,72 +42,60 @@ Private Sub ImportButton_Click()
 
 Dim JsonObject As Object
 Dim objRequest As Object
+Dim strBaseUrl As String
 Dim strUrl As String
-Dim blnAsync As Boolean
 Dim strResponse As String
-Dim codeResponse As String
 Dim responseStatus As Variant
 
-
-' Mandatory field
+' Mandatory fields
 If cprBox.value = "" Then
     MsgBox "Du skal indsætte cprnummer", vbCritical
     Exit Sub
 End If
- 
 
-' Mandatory field
+' apikeyBox bruges nu til portal-tokenet (genereres i portalen under /settings/api-tokens).
 If apikeyBox.value = "" Then
-    MsgBox "Du skal indsætte api nøgle", vbCritical
+    MsgBox "Du skal indsætte portal-token", vbCritical
     Exit Sub
 End If
 
 If SecureLifeButton.value = False And BedstPensionButton.value = False And SecureLifeTestButton.value = False Then
-    MsgBox "Du skal vælge mellem bedstpension / securelife", vbCritical
+    MsgBox "Du skal vælge miljø", vbCritical
     Exit Sub
 End If
 
+If BedstPensionButton.value = True Then
+    MsgBox "BedstPension er endnu ikke migreret til den nye portal.", vbInformation
+    Exit Sub
+End If
+
+' Map miljø-valg til admin-portal-v2 base-URL.
+If SecureLifeTestButton.value = True Then
+    strBaseUrl = "https://test2.portal.cpof.dk" ' TODO: bekræft public staging-URL
+Else
+    strBaseUrl = "https://portal.cpof.dk" ' CPOF (prod) — aktiv bruger
+End If
+
+strUrl = strBaseUrl & "/api/excel/employee/" & cprBox.value
+
 Set objRequest = CreateObject("MSXML2.XMLHTTP")
-
-If SecureLifeButton = True Then
-    Debug.Print ("Securelife")
-    strUrl = "https://europe-west1-life-prod-e2f1e.cloudfunctions.net/integration/excel/" & cprBox.value
-End If
-
-If BedstPensionButton = True Then
-    Debug.Print ("Bedstpension")
-    strUrl = "https://europe-west1-bedstpension-prod.cloudfunctions.net/integration/excel/" & cprBox.value
-End If
-
-
-If SecureLifeTestButton = True Then
-    Debug.Print ("Securelife test")
-    strUrl = "https://europe-west1-life-stage-e2fb7.cloudfunctions.net/integration/excel/" & cprBox.value
-End If
-
-
-blnAsync = True
-
 With objRequest
-    .Open "GET", strUrl, blnAsync
-    .setRequestHeader "Content-Type", "application/json"
-    .setRequestHeader "apikey", apikeyBox.value
+    .Open "GET", strUrl, False
+    .setRequestHeader "Accept", "application/json"
+    .setRequestHeader "Authorization", "Bearer " & apikeyBox.value
     .send
-    'spin wheels whilst waiting for response
-    While objRequest.readyState <> 4
-        DoEvents
-    Wend
     strResponse = .responseText
     responseStatus = .Status
 End With
- Debug.Print (responseStatus)
- 
- If Not responseStatus = 200 Then
+Debug.Print (responseStatus)
+
+If Not responseStatus = 200 Then
+    ' 401 = token udløbet/ugyldigt -> generér nyt token i portalen og indsæt igen.
     MsgBox "ERROR: " & strResponse
     Exit Sub
- Else
+Else
     Set JsonObject = JsonConverter.ParseJson(strResponse)
- End If
+End If
 
 
 Dim text As String

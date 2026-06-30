@@ -64,16 +64,17 @@ If SecureLifeButton.value = False And BedstPensionButton.value = False And Secur
     Exit Sub
 End If
 
-If BedstPensionButton.value = True Then
-    MsgBox "BedstPension er endnu ikke migreret til den nye portal.", vbInformation
-    Exit Sub
-End If
-
-' Map miljø-valg til admin-portal-v2 base-URL.
+' Map miljø-valg til base-URL.
+' BEMÆRK: kontrol-navnene er bevaret af hensyn til .frx-bindingen. Knap-labels relabeles i Excel:
+'   BedstPensionButton   -> "CPOF"       (prod)
+'   SecureLifeTestButton -> "CPOF test"
+'   SecureLifeButton     -> "SecureLife" (prod)
 If SecureLifeTestButton.value = True Then
-    strBaseUrl = "https://test.portal.cpof.dk" ' TODO: bekræft public staging-URL
+    strBaseUrl = "https://test.portal.cpof.dk" ' CPOF test
+ElseIf BedstPensionButton.value = True Then
+    strBaseUrl = "https://portal.cpof.dk" ' CPOF (prod)
 Else
-    strBaseUrl = "https://portal.cpof.dk" ' CPOF (prod) — aktiv bruger
+    strBaseUrl = "https://portal.securelife.dk" ' SecureLife (prod)
 End If
 
 strUrl = strBaseUrl & "/api/excel/employee/" & cprBox.value

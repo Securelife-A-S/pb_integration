@@ -27,11 +27,14 @@ token i portalen og indsæt det igen. Samme arbejdsgang som med den gamle nøgle
 
 ## Miljø-mapping
 
-| Radioknap | URL |
-|---|---|
-| SecureLife (prod) | `https://portal.cpof.dk` (CPOF — aktiv bruger) |
-| SecureLife test | `https://test2.portal.cpof.dk` *(bekræft public staging-URL i koden)* |
-| BedstPension | ikke migreret → viser besked |
+| Miljø (label) | URL | Kontrol (navn bevaret pga. .frx-binding) |
+|---|---|---|
+| CPOF (prod) | `https://portal.cpof.dk` | `BedstPensionButton` |
+| CPOF test | `https://test.portal.cpof.dk` | `SecureLifeTestButton` |
+| SecureLife (prod) | `https://portal.securelife.dk` | `SecureLifeButton` |
+
+> Kontrol-navnene i `.frx` er **ikke** omdøbt (det kræver Excel). Relabel kun den synlige
+> knap-tekst i VBA-editoren iht. kolonnen ovenfor; logikken i `.frm` er keyet på kontrol-navnet.
 
 ## Anbefalet (valgfrit) — relabel feltet
 

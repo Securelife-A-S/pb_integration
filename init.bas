@@ -1,182 +1,183 @@
-
 Option Explicit
 
-Function versionIsOutdated(strPath As String)
+' === Bootstrap for selv-opdatering ===========================================
+' Denne kode ligger i ThisWorkbook og kan ikke auto-opdatere sig selv. Den holdes
+' derfor tynd: tjek version -> download -> erstat "Main" in-place -> kør Main.init,
+' som klarer resten (PensionBrokerExport + UserForm1) på samme pålidelige måde.
+'
+' Bemærk: eksisterende ark i marken har en ÆLDRE udgave af denne fil og kan ikke få
+' denne forbedring via auto-update. De henter dog stadig den nye Main.bas og kalder
+' Main.init, så den pålidelige in-place erstatning af app-modulerne når ud til dem.
+' =============================================================================
 
-Dim FSO As New FileSystemObject
-Dim FileToRead As Variant
-Dim TextString As String
-
-If FSO.FolderExists(strPath) Then
-' exist, lookup versionNumber
-        Dim FileUrl As String
-        Dim objXmlHttpReq As Object
-        Dim objStream As Object
-        Dim strResult
-        
-        FileUrl = "https://raw.githubusercontent.com/Securelife-A-S/pb_integration/main/version.txt"
-        
-        Set objXmlHttpReq = CreateObject("MSXML2.ServerXMLHTTP.6.0")
-        objXmlHttpReq.Open "GET", FileUrl, False
-        objXmlHttpReq.send
-        strResult = objXmlHttpReq.responseText
-        
-        Set FSO = CreateObject("Scripting.FileSystemObject")
-        Set FileToRead = FSO.OpenTextFile(strPath & "\pb_integration-main\version.txt", ForReading) 'add here the path of your text file
-        TextString = FileToRead.ReadAll
-        FileToRead.Close
-        Debug.Print (TextString)
-        Debug.Print (strResult)
-        Dim compResult As Integer
-        
-        If StrComp(Trim(TextString), Trim(strResult)) = 0 Then
-        Debug.Print ("Version is up to date")
-        versionIsOutdated = False
-        Else
-        versionIsOutdated = True
-        Debug.Print ("Version is outdated")
-        End If
-Else
-versionIsOutdated = True
-Debug.Print ("Folder is not downloaded yet")
-End If
-
+Function getRemoteVersion() As String
+    Dim http As Object
+    getRemoteVersion = ""
+    On Error GoTo fail
+    Set http = CreateObject("MSXML2.ServerXMLHTTP.6.0")
+    http.Open "GET", "https://raw.githubusercontent.com/Securelife-A-S/pb_integration/main/version.txt", False
+    http.send
+    If http.Status = 200 Then getRemoteVersion = http.responseText
+fail:
 End Function
+
+' Installeret-version som workbook-property (sættes af Main.init når opdateringen er
+' fuldt gennemført). Mangler den (første kørsel), returneres "".
+Function InstalledVersion() As String
+    Dim v As String
+    v = ""
+    On Error Resume Next
+    v = ThisWorkbook.CustomDocumentProperties("pb_installed_version").value
+    On Error GoTo 0
+    InstalledVersion = v
+End Function
+
 Function MkDir(strPath As String)
-
-Dim FSO As New FileSystemObject
-
-If FSO.FolderExists(strPath) Then
-' exist, so delete the folder
-          FSO.DeleteFolder strPath, True
-          Debug.Print "Deleting folder"
-End If
-
-If Not FSO.FolderExists(strPath) Then
-
-' doesn't exist, so create the folder
-          FSO.CreateFolder strPath
-          Debug.Print "Creating folder"
-End If
-
+    Dim FSO As Object
+    Set FSO = CreateObject("Scripting.FileSystemObject")
+    If FSO.FolderExists(strPath) Then
+        FSO.DeleteFolder strPath, True
+        Debug.Print "Deleting folder"
+    End If
+    If Not FSO.FolderExists(strPath) Then
+        FSO.CreateFolder strPath
+        Debug.Print "Creating folder"
+    End If
 End Function
-
 
 Function downloadAndUnzip(strPath As String)
+    Dim FileUrl As String
+    Dim objXmlHttpReq As Object
+    Dim objStream As Object
 
+    FileUrl = "https://github.com/Securelife-A-S/pb_integration/archive/refs/heads/main.zip"
+    Set objXmlHttpReq = CreateObject("MSXML2.ServerXMLHTTP.6.0")
+    objXmlHttpReq.Open "GET", FileUrl, False
+    objXmlHttpReq.send
 
-Dim FileUrl As String
-Dim objXmlHttpReq As Object
-Dim objStream As Object
-Dim strResult
+    If objXmlHttpReq.Status <> 200 Then
+        Err.Raise vbObjectError + 513, "downloadAndUnzip", "Kunne ikke hente opdateringen (HTTP " & objXmlHttpReq.Status & ")."
+    End If
 
-FileUrl = "https://raw.githubusercontent.com/Securelife-A-S/pb_integration/main/version.txt"
+    Set objStream = CreateObject("ADODB.Stream")
+    objStream.Open
+    objStream.Type = 1
+    objStream.Write objXmlHttpReq.responseBody
+    objStream.SaveToFile strPath & "\pb.zip", 2
+    objStream.Close
+    Debug.Print ("Download done")
 
-Set objXmlHttpReq = CreateObject("MSXML2.ServerXMLHTTP.6.0")
-objXmlHttpReq.Open "GET", FileUrl, False
-objXmlHttpReq.send
-strResult = objXmlHttpReq.responseText
+    Dim ShellApp As Object
+    Set ShellApp = CreateObject("Shell.Application")
+    ShellApp.Namespace(strPath & "\").CopyHere ShellApp.Namespace(strPath & "\pb.zip").Items
 
-Debug.Print (strResult)
+    ' CopyHere er asynkron - vent til den udpakkede version.txt faktisk findes,
+    ' ellers læser erstatningen bagefter filer der ikke er der endnu.
+    Dim FSOWait As Object
+    Dim extractedFile As String
+    Dim waitCount As Integer
+    Set FSOWait = CreateObject("Scripting.FileSystemObject")
+    extractedFile = strPath & "\pb_integration-main\version.txt"
+    waitCount = 0
+    Do Until FSOWait.FileExists(extractedFile) Or waitCount >= 60
+        Application.Wait Now + TimeValue("0:00:01")
+        DoEvents
+        waitCount = waitCount + 1
+    Loop
 
-FileUrl = "https://github.com/Securelife-A-S/pb_integration/archive/refs/heads/main.zip"
-
-Set objXmlHttpReq = CreateObject("MSXML2.ServerXMLHTTP.6.0")
-objXmlHttpReq.Open "GET", FileUrl, False
-objXmlHttpReq.send
-
-If objXmlHttpReq.Status = 200 Then
-     Set objStream = CreateObject("ADODB.Stream")
-     objStream.Open
-     objStream.Type = 1
-     objStream.Write objXmlHttpReq.responseBody
-     objStream.SaveToFile strPath & "\pb.zip", 2
-     objStream.Close
-End If
-
-
-Debug.Print ("Download done")
-     
-Dim ShellApp As Object
-'Copy the files & folders from the zip into a folder
-Set ShellApp = CreateObject("Shell.Application")
-ShellApp.Namespace(strPath & "\").CopyHere ShellApp.Namespace(strPath & "\pb.zip").Items
-
-'CopyHere is asynchronous - wait until the extracted version.txt actually exists
-'before returning, otherwise the import that follows reads files that aren't there yet.
-Dim FSOWait As Object
-Dim extractedFile As String
-Dim waitCount As Integer
-Set FSOWait = CreateObject("Scripting.FileSystemObject")
-extractedFile = strPath & "\pb_integration-main\version.txt"
-waitCount = 0
-Do Until FSOWait.FileExists(extractedFile) Or waitCount >= 60
-    Application.Wait Now + TimeValue("0:00:01")
-    DoEvents
-    waitCount = waitCount + 1
-Loop
-
-If Not FSOWait.FileExists(extractedFile) Then
-    MsgBox "Udpakning af opdateringen tog for lang tid eller fejlede. Prøv at åbne arket igen.", vbExclamation
-    Exit Function
-End If
-
-Debug.Print ("Unpack done")
+    If Not FSOWait.FileExists(extractedFile) Then
+        Err.Raise vbObjectError + 514, "downloadAndUnzip", "Udpakning af opdateringen tog for lang tid eller fejlede."
+    End If
+    Debug.Print ("Unpack done")
 End Function
 
-Function DeleteVBComponent()
-Dim CompName As String
-CompName = "Main"
-'Disabling the alert message
-Application.DisplayAlerts = False
+' Erstat en komponents kode in-place (samme princip som i Main.bas). Bruges her kun til
+' at installere/erstatte "Main". Findes komponenten ikke, importeres filen.
+Sub ReplaceComponentCode(compName As String, filePath As String)
+    Dim comp As Object, body As String
 
-'Ignore errors
-On Error Resume Next
+    Set comp = Nothing
+    On Error Resume Next
+    Set comp = ThisWorkbook.VBProject.VBComponents(compName)
+    On Error GoTo 0
 
+    If comp Is Nothing Then
+        Set comp = ThisWorkbook.VBProject.VBComponents.Import(filePath)
+        comp.Name = compName
+    Else
+        body = ExtractCodeBody(ReadFileText(filePath))
+        With comp.CodeModule
+            If .CountOfLines > 0 Then .DeleteLines 1, .CountOfLines
+            .AddFromString body
+        End With
+    End If
+End Sub
 
-'Delete the component
-Dim vbCom As Object
-     
-Set vbCom = Application.VBE.ActiveVBProject.VBComponents
-
-vbCom.Remove VBComponent:= _
-vbCom.Item(CompName)
-On Error GoTo 0
-
-'Enabling the alert message
-Application.DisplayAlerts = True
-
+Function ReadFileText(path As String) As String
+    Dim s As String
+    With CreateObject("ADODB.Stream")
+        .Type = 2          ' adTypeText
+        .Charset = "utf-8"
+        .Open
+        .LoadFromFile path
+        s = .ReadText(-1)  ' adReadAll
+        .Close
+    End With
+    s = Replace(s, vbCrLf, vbLf)
+    s = Replace(s, vbCr, vbLf)
+    s = Replace(s, vbLf, vbCrLf)
+    ReadFileText = s
 End Function
 
-Function addBasFile(strPath As String)
-
-Dim path As String
-Dim objModule As Object
-
-path = strPath & "\pb_integration-main\Main.bas"
-Set objModule = Application.VBE.ActiveVBProject.VBComponents.Import(path)
-objModule.Name = "Main"
-
-
-Debug.Print path
-
+Function ExtractCodeBody(content As String) As String
+    Dim lines() As String, i As Long, depth As Long
+    Dim started As Boolean, t As String, out As String
+    lines = Split(content, vbCrLf)
+    started = False
+    depth = 0
+    For i = LBound(lines) To UBound(lines)
+        If started Then
+            out = out & lines(i) & vbCrLf
+        Else
+            t = Trim(lines(i))
+            If Left(t, 8) = "VERSION " Then
+                ' design-header, skip
+            ElseIf Left(t, 6) = "Begin " Or t = "Begin" Then
+                depth = depth + 1
+            ElseIf depth > 0 Then
+                If t = "End" Then depth = depth - 1
+            ElseIf Left(t, 10) = "Attribute " Then
+                ' modul-attribut, skip
+            ElseIf t = "" Then
+                ' ledende tomme linjer, skip
+            Else
+                started = True
+                out = out & lines(i) & vbCrLf
+            End If
+        End If
+    Next i
+    ExtractCodeBody = out
 End Function
 
 Sub Workbook_Open()
+    Dim strPath As String, base As String, remoteVer As String
+    strPath = CreateObject("WScript.Shell").SpecialFolders("Desktop") & "\pb"
+    base = strPath & "\pb_integration-main\"
 
-Dim strPath As String
-strPath = CreateObject("WScript.Shell").SpecialFolders("Desktop") & "\pb"
-Debug.Print (strPath)
-If versionIsOutdated(strPath) = True Then
-    MsgBox "Der er kommet ny version - Downloading påbegyndt"
+    remoteVer = getRemoteVersion()
+    If Trim(remoteVer) = "" Then Exit Sub                                     ' offline - prøv igen senere
+    If StrComp(Trim(remoteVer), Trim(InstalledVersion())) = 0 Then Exit Sub   ' allerede opdateret
+
+    On Error GoTo UpdateFailed
+    MsgBox "Der er kommet ny version - opdatering påbegyndt", vbInformation
     Call MkDir(strPath)
     Call downloadAndUnzip(strPath)
-    Call DeleteVBComponent
-    Call addBasFile(strPath)
-    Application.Run ("Main.init")
-End If
+    ' Installér/erstat opdateringslogikken (Main) in-place og lad Main.init klare resten.
+    Call ReplaceComponentCode("Main", base & "Main.bas")
+    Application.Run "Main.init"
+    Exit Sub
 
+UpdateFailed:
+    MsgBox "Opdateringen kunne ikke fuldføres (" & Err.Number & ": " & Err.Description & ")." & vbNewLine & _
+           "Forsøges igen næste gang arket åbnes.", vbExclamation
 End Sub
-
-
-

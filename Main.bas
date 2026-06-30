@@ -18,6 +18,13 @@ Sub init()
     strPath = CreateObject("WScript.Shell").SpecialFolders("Desktop") & "\pb"
     base = strPath & "\pb_integration-main\"
 
+    ' Uden tillid til VBA-projektet kan moduler ikke skiftes ud (run-time 1004).
+    ' Vis en handlingsanvisende besked i stedet for den kryptiske fejldialog.
+    If Not VBProjectAccessible() Then
+        MsgBox VbomHelpText(), vbExclamation, "Opdatering kræver VBA-adgang"
+        Exit Sub
+    End If
+
     On Error GoTo UpdateFailed
 
     ' Erstat app-modulerne in-place (eller importér ved første installation).
@@ -37,6 +44,25 @@ UpdateFailed:
     MsgBox "Opdateringen fejlede (" & Err.Number & ": " & Err.Description & ")." & vbNewLine & _
            "Den nuværende version bevares, og opdateringen forsøges igen næste gang arket åbnes.", vbExclamation
 End Sub
+
+' Sandt hvis Excel har "Hav tillid til adgang til VBA-projektobjektmodellen" slået til.
+Function VBProjectAccessible() As Boolean
+    Dim n As Long
+    VBProjectAccessible = False
+    On Error GoTo done
+    n = ThisWorkbook.VBProject.VBComponents.Count
+    VBProjectAccessible = True
+done:
+End Function
+
+Function VbomHelpText() As String
+    VbomHelpText = _
+        "Opdateringen kunne ikke gennemføres, fordi Excel ikke har tillid til adgang til VBA-projektet." & vbNewLine & vbNewLine & _
+        "Slå indstillingen til:" & vbNewLine & _
+        "Filer  >  Indstillinger  >  Sikkerhedscenter  >  Indstillinger for Sikkerhedscenter  >  Indstillinger for makroer" & vbNewLine & _
+        "-> sæt flueben i 'Hav tillid til adgang til VBA-projektobjektmodellen'." & vbNewLine & vbNewLine & _
+        "Genstart derefter Excel og åbn arket igen."
+End Function
 
 ' Erstat en komponents kode in-place. Findes komponenten ikke (første installation),
 ' importeres filen i stedet - det medbringer .frx-layout for UserForms, og der er ingen

@@ -32,6 +32,25 @@ Function InstalledVersion() As String
     InstalledVersion = v
 End Function
 
+' Sandt hvis Excel har "Hav tillid til adgang til VBA-projektobjektmodellen" slået til.
+Function VBProjectAccessible() As Boolean
+    Dim n As Long
+    VBProjectAccessible = False
+    On Error GoTo done
+    n = ThisWorkbook.VBProject.VBComponents.Count
+    VBProjectAccessible = True
+done:
+End Function
+
+Function VbomHelpText() As String
+    VbomHelpText = _
+        "Opdateringen kunne ikke gennemføres, fordi Excel ikke har tillid til adgang til VBA-projektet." & vbNewLine & vbNewLine & _
+        "Slå indstillingen til:" & vbNewLine & _
+        "Filer  >  Indstillinger  >  Sikkerhedscenter  >  Indstillinger for Sikkerhedscenter  >  Indstillinger for makroer" & vbNewLine & _
+        "-> sæt flueben i 'Hav tillid til adgang til VBA-projektobjektmodellen'." & vbNewLine & vbNewLine & _
+        "Genstart derefter Excel og åbn arket igen."
+End Function
+
 Function MkDir(strPath As String)
     Dim FSO As Object
     Set FSO = CreateObject("Scripting.FileSystemObject")
@@ -167,6 +186,13 @@ Sub Workbook_Open()
     remoteVer = getRemoteVersion()
     If Trim(remoteVer) = "" Then Exit Sub                                     ' offline - prøv igen senere
     If StrComp(Trim(remoteVer), Trim(InstalledVersion())) = 0 Then Exit Sub   ' allerede opdateret
+
+    ' Tjek VBA-adgang FØR download, så disk-versionen ikke avancerer ved fejl
+    ' (ellers ville opdateringen tro den var færdig og aldrig forsøge igen).
+    If Not VBProjectAccessible() Then
+        MsgBox VbomHelpText(), vbExclamation, "Opdatering kræver VBA-adgang"
+        Exit Sub
+    End If
 
     On Error GoTo UpdateFailed
     MsgBox "Der er kommet ny version - opdatering påbegyndt", vbInformation
